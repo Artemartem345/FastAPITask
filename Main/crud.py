@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from models import *
-from schema import MenuSchema
+from schema import *
+
 # Получение блюда
 def get_dish(db:Session):
     if db is None:
@@ -8,7 +9,7 @@ def get_dish(db:Session):
     return db
 # Получение блюда по айдишнику
 def get_dish_by_id(db:Session, dish_id):
-    return db.query(MenuSchema).filter(Menu.id == dish_id).first()
+    return db.query(DishResponse).filter(Menu.id == dish_id).first()
 # Создание блюда
 def create_dish(db:Session, dish: Menu):
     _dish = Menu(title=dish.title,description=dish.description)
@@ -17,7 +18,7 @@ def create_dish(db:Session, dish: Menu):
     db.refresh(_dish)
     return _dish
 # Удаление блюда
-def remove_dish(db:Session, dish_id: Menu):
+def remove_dish(db:Session, dish_id: Dish):
     _dish = get_dish_by_id(db=db, dish_id=dish_id)
     db.delete(_dish)
     db.commit()
@@ -30,4 +31,6 @@ def update_dish(db:Session, dish_id: Menu, title:str, description:str):
     db.refresh(_dish)
     return _dish
     
+    
+
 

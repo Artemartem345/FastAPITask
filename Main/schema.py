@@ -1,31 +1,75 @@
-from typing import List, Optional, Generic, TypeVar
-from pydantic import BaseModel, Field
-from pydantic.generics import GenericModel
-from sqlalchemy import UUID
 
-T = TypeVar('T')
+import decimal
+import uuid
+from typing import Optional
 
-class MenuSchema(BaseModel):
-    id: Optional[int]=None
-    title: Optional[str]=None
-    description: Optional[str]=None
-    
-    
+from pydantic import BaseModel
+
+# Action with DISH
+class DishCreate(BaseModel):
+    title: str
+    description: str
+    price: decimal.Decimal
+
+
+class DishUpdate(BaseModel):
+    title: Optional[str]
+    description: Optional[str]
+    price: Optional[decimal.Decimal]
+
+
+class DishResponse(BaseModel):
+    id: uuid.UUID
+    title: str
+    description: str
+    submenu_id: uuid.UUID
+    price: decimal.Decimal
+
     class Config:
-        orm_mode = True
+        from_attributes = True
         
-class SubMenuSchema(BaseModel):
-    parameter: MenuSchema = Field(...)
-    id: Optional[int]=None
-    title: Optional[str]=None
-    description: Optional[str]=None
-    
+
+
+# Action with Menu
+class MenuCreate(BaseModel):
+    title: str
+    description: str
+
+
+class MenuUpdate(BaseModel):
+    title: Optional[str]
+    description: Optional[str]
+
+
+class MenuResponse(BaseModel):
+    id: uuid.UUID
+    title: str
+    description: str
+    submenus_count: int = 0
+    dishes_count: int = 0
+
+    class Config:
+        from_attributes = True
         
         
-class MenuSubmenusSchema(BaseModel):
-    parameter: SubMenuSchema = Field(...) 
-    id: Optional[str]=None 
-    title: Optional[str]=None
-    description: Optional[str]=None
-    submenus: List[SubMenuSchema]=None
-    
+
+# Action with SubMenu
+class SubmenuCreate(BaseModel):
+    title: str
+    description: str
+
+
+class SubmenuUpdate(BaseModel):
+    title: Optional[str]
+    description: Optional[str]
+
+
+class SubmenuResponse(BaseModel):
+    id: uuid.UUID
+    title: str
+    description: str
+    menu_id: uuid.UUID
+    dishes_count: int = 0
+
+    class Config:
+        from_attributes = True
